@@ -1,0 +1,34 @@
+{% load static %} {% load crispy_forms_tags %} 
+{% block cssfiles %}
+<link rel="stylesheet" href="{% static './styles.css' %}">
+{% endblock cssfiles %}
+
+{% block content %}
+<br>
+<div class="conatiner">
+    <div class="card-body">
+        <div class="title">
+            <h5 class="card-title"><b>Unify - Connecting Students</b></h5>
+            <h6 class="sub-text">Create a New Account</h6>
+        </div>
+        <div id='reg-form' class="form">
+            <form class="form-signin" method="POST">
+                {% csrf_token %} 
+                {{ form|crispy }}
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary text-uppercase" type="submit">
+                        Sign up
+                    </button>
+                </div>
+                <small>
+                    <p class="text-center">
+                        Already Registered ?
+                        <a href="{% url 'login' %}"><b>Login now !</b></a>
+                    </p>
+                </small>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% load static %} {% load crispy_forms_tags %} 
+
+{% block cssfiles %} 
+<link rel="stylesheet" href="{% static './styles.css' %}">
+{% endblock cssfiles %} 
+
+{% block content %}
+<br />
+
+<div class="conatiner">
+    <div class="card-body rd">
+        <h5 class="card-title text-center">
+            <b>You have been logged out !</b>
+        </h5>
+        <a class= 'btn' href="{% url 'login' %}"><b>Login</b></a>
+    </div>
+</div>
+
+{% endblock content %}
