@@ -18,12 +18,14 @@
     <nav>
         <div class="container">
             <h2 class="log">Unify</h2>
-            <div class="searchbar">
+            <form class="searchbar" class="profile"
+                action="{% url 'search_users' %}"
+                method="get">
                 <i class="uil uil-search"></i>
-                <input type="search" placeholder="Search for Friends, Fellow Students, Teachers....">
-            </div>
+                <input name ='q' type="search" placeholder="Search for Friends, Fellow Students, Teachers....">
+            </form>
             <div class="create">
-                <label class= "btn btn-primary" for="create post">Create</label>
+                <a class= "btn btn-primary" for="create post" href="{% url 'post-create' %}">Create</a>
                 <div class="profile-photo">
                     <img src="{% static 'images/profile-pic.png' %}" alt="#">
                 </div>
@@ -36,7 +38,7 @@
         <div class="container">
             <!---------------------- Left Section------------------>
             <div class="left">
-                <a class="profile">
+                <a class="profile" href="{% url 'my_profile' %}">
                     <div class="profile-photo">
                         <img src="{% static 'images/profile-pic.png' %}" alt="#">
                     </div>
@@ -109,11 +111,6 @@
                     <span><i class="uil uil-bookmark"></i></span>
                     <h3>Bookmarks</h3>
                 </a>
-                
-                <a class="menu-item" id="analytics">
-                    <span><i class="uil uil-chart-line"></i></span>
-                    <h3>Analytics</h3>
-                </a>
 
                 <a class="menu-item" id="theme">
                     <span><i class="uil uil-palette"></i></span>
@@ -123,7 +120,12 @@
                 <a class="menu-item" id="settings">
                     <span><i class="uil uil-setting"></i></span>
                     <h3>Settings</h3>
-                </a>   
+                </a> 
+                
+                <a class="menu-item" id="logout" href="{% url 'logout' %}"  style="text-decoration: none;">
+                    <span><i class="uil uil-signout"></i></span>
+                    <h3 class='logout'>logout</h3>
+                </a>
             </div>
 
             <!---------------------- END OF SIDEBAR -------------------------->

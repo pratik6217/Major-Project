@@ -41,6 +41,11 @@
 }
 
 
+.logout{
+    text-decoration: none;
+    color: var(--color-black);
+}
+
 body{
     font-family: "Poppins", sans-serif ;
     color: var(--color-dark);

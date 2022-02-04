@@ -2,7 +2,7 @@ from typing import FrozenSet
 from django.http.response import HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile 
-# from feed.models import Post
+from feed.models import Post
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
@@ -16,8 +16,8 @@ import random
 # Create your views here.
 
 @login_required
-def homepage(request):
-    return render(request, "home.html")
+def home(request):
+    return render(request, "./home.html")
 
 User = get_user_model()
 
@@ -119,7 +119,7 @@ def profile_view(request, slug):
     u = p.user
     sent_friend_requests = FriendRequest.objects.filter(from_user= p.user)
     rec_friend_requests = FriendRequest.objects.filter(to_user= p.user)
-    user_posts = Post.objects.filter(user_name= u)
+    user_posts = Post.objects.filter(username= u)
     friends = p.friends.all()
 
     # is this user our friend or not
@@ -128,11 +128,11 @@ def profile_view(request, slug):
         button_status = 'not_friend'
 
         # if we have sent them a friend request
-        if len((FriendRequest.objects.filter(from_user= request.user).filter(to_user= p.user)) == 1):
+        if (FriendRequest.objects.filter(from_user= request.user).filter(to_user= p.user)):
             button_status = 'friend_request_sent'
 
         # if we have received a friend request from them
-        if len(FriendRequest.objects.filter(from_user= p.user).filter(to_user= request.user) == 1):
+        if FriendRequest.objects.filter(from_user= p.user).filter(to_user= request.user):
             button_status = 'friend_request_received'
 
     context = {
@@ -179,13 +179,14 @@ def edit_profile(request):
         }
     return render(request, 'users/edit_profile.html', context)
 
+# @login_required
 def my_profile(request):
     p = request.user.profile
     you = p.user
     sent_friend_requests = FriendRequest.objects.filter(from_user= you)
     rec_friend_requests = FriendRequest.objects.filter(to_user= you)
     friends = p.friends.all()
-    user_post = Post.objects.filter(user_name= you)
+    user_post = Post.objects.filter(username= you)
 
     button_status = 'none'
     # if this user is our friend
@@ -208,6 +209,7 @@ def my_profile(request):
         'rec_friend_requests': rec_friend_requests,
         'post_count': user_post.count
     }
+    return render(request, f'users/profile.html', context)
 
 @login_required
 def search_users(request):

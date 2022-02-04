@@ -27,7 +27,7 @@ urlpatterns = [
     path('', include('users.urls')),
     path('', include('feed.urls')),
     # path('', include('allauth.urls')),
-    path('homepage/', user_views.homepage),
+    path('homepage/', user_views.home, name='homepage'),
     path('users/', user_views.users_list, name= 'users_list'),
     path('users/<slug>', user_views.profile_view, name= 'profile_view'),
     path('friends/', user_views.friend_list, name= 'friend_list'),
