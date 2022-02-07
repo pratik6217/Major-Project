@@ -1,5 +1,10 @@
 {% load static %}
+{% block cssfiles %}
+<!-- Css Link -->
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock cssfiles %}
 
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,13 +12,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unify - Connecting Students</title>
-    <!-- Css Link -->
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    
     <!-- Unicons iconscout Link-->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
 </head>
-<body>
+<body id="body">
     <!--------------------------- Navigation Section ------------------------------>
     <nav>
         <div class="container">
@@ -26,9 +28,9 @@
             </form>
             <div class="create">
                 <a class= "btn btn-primary" for="create post" href="{% url 'post-create' %}">Create</a>
-                <div class="profile-photo">
-                    <img src="{% static 'images/profile-pic.png' %}" alt="#">
-                </div>
+                <a class="profile-photo" href="{% url 'my_profile' %}">
+                    <img src="{{request.user.profile.image.url}}" alt="#">
+                </a>
             </div>
         </div>
     </nav>
@@ -40,14 +42,14 @@
             <div class="left">
                 <a class="profile" href="{% url 'my_profile' %}">
                     <div class="profile-photo">
-                        <img src="{% static 'images/profile-pic.png' %}" alt="#">
+                        <img src="{{request.user.profile.image.url}}" alt="">
                     </div>
 
                     <div class="handle">
-                        <h4>Pratik Mishra</h4>
-                        <p class="text-muted">
+                        <h4 style="color:var(--color-primary);">{{request.user.username}}</h4>
+                        <!-- <p class="text-muted">
                             @pratik
-                        </p>
+                        </p> -->
                     </div>
                 </a>
             
@@ -64,11 +66,11 @@
                     <h3>Explore</h3>
                 </a>
 
-                <a class="menu-item" id="notifications">
+                <a class="menu-item" id="notifications" href = "{% url 'notifications' %}">
                     <span><i class="uil uil-bell"><small class="notifications-count">9+</small></i></span>
                     <h3>Notifications</h3>
                     <!------------------ NOTIFICATIONS POPUP ------------------------>
-                    <div class="notifications-popup">
+                    <!-- <div class="notifications-popup">
                         <div>
                             <div class="profile-photo">
                                 <img src="{% static './images/profile-pic.png' %}" alt="#">
@@ -98,7 +100,7 @@
                                 <small class="text-muted">1 Hour Ago</small>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!--------------------- END OF NOTIFICATIONS POPUP -------------->
                 </a>
 
@@ -129,80 +131,24 @@
             </div>
 
             <!---------------------- END OF SIDEBAR -------------------------->
-            <label class="btn btn-primary" for="Create Post">Create Post</label>
+            <a class="btn btn-primary" for="Create Post" style="text-decoration: none;" href="{% url 'post-create' %}">Create Post</a>
 
         </div>
 
             <!-------------------- Middle Section ------------------------->
             <div class="middle">
-
-                <!------------------------- STORIES --------------------------->
-                <div class="stories">
-                    <div class="story">
-                        <div class="profile-photo">
-                            <img src="{% static './images/profile-pic.png' %}" alt="#">
-                        </div>
-                        <p class="name">Your Story</p>
-                    </div>
-
-                    <div class="story">
-                        <div class="profile-photo">
-                            <img src="{% static './images/member-1.png' %}" alt="#">
-                        </div>
-                        <p class="name">Laila James</p>
-                    </div>
-
-                    <div class="story">
-                        <div class="profile-photo">
-                            <img src="{% static './images/member-2.png' %}" alt="#">
-                        </div>
-                        <p class="name">John Doe</p>
-                    </div>
-
-                    <div class="story">
-                        <div class="profile-photo">
-                            <img src="{% static './images/member-3.png' %}" alt="#">
-                        </div>
-                        <p class="name">Jane Doe</p>
-                    </div>
-
-                    <div class="story">
-                        <div class="profile-photo">
-                            <img src="{% static './images/member-4.png' %}" alt="#">
-                        </div>
-                        <p class="name">Adam</p>
-                    </div>
-
-                    <div class="story">
-                        <div class="profile-photo">
-                            <img src="{% static './images/member-6.png' %}" alt="#">
-                        </div>
-                        <p class="name">Joe</p>
-                    </div>
-                </div>
-                <!-------------------- END OF STORIES ----------------------->
-            
-                <!------------------------ Create Post ------------------>
-                <form class="create-post">
-                    <div class="profile-photo">
-                        <img src="{% static './images/profile-pic.png' %}" alt="">
-                    </div>
-                    <input type="text" placeholder="What's on your mind, Pratik?" id="create-post">
-                    <input type="submit" value="Post" class="btn btn-primary" >
-                </form>
-
                 <!-------------------------- FEED ------------------------------>
-                <div class="feeds">
+                <div class="feeds" id="feeds">
+                    {% for post in posts %}
                     <div class="feed">
-                        <!--FEED's HEAD SECTION-->
                         <div class="head">
                             <div class="user">
                                 <div class="profile-photo">
-                                    <img src="{% static './images/member-1.png' %}" alt="">
+                                    <img src="{{post.username.profile.image.url}}" alt="">
                                 </div>
                                 <div class="info">
-                                    <h3>Lana Rose</h3>
-                                    <small>Dubai, 15 MINUTES AGO</small>
+                                    <a href="{{ post.username.profile.get_absolute_url }}" style="text-decoration: none; color: var(--color-primary);"><h3>{{post.username}}</h3></a>
+                                    <small>{{post.date_posted}}</small>
                                 </div>
                             </div>
                             <span class="edit">
@@ -211,132 +157,64 @@
                         </div>
                         <!--FEED's IMAGE SECTION-->
                         <div class="photo">
-                            <img src="{% static './images/photo1.png' %}" alt="#">
+                            <img src="{{ post.pic.url }}" alt="#">
                         </div>
                         <!--FEED's ACTION CENTER-->
                         <div class="action-button">
                             <div class="interaction-buttons">
-                                <span><i class="uil uil-heart"></i></span>
-                                <span><i class="uil uil-comment"></i></span>
-                                <span><i class="uil uil-share-alt"></i></span>
+                                <button class="btn like" id="{{post.id}}">
+                                    {% if post in liked_post %}
+                                        <a href="{% url 'post-like' %}" style="color:red;" id="likebtn{{post.id}}"> Unlike </a> 
+                                    {% else %}
+                                        <a href="{% url 'post-like' %}" style="color:green;" id="likebtn{{post.id}}"> Like </a>
+                                    {% endif %}
+                                </button>
+                                <a class="btn btn-outline-info" href="{% url 'post-detail' post.id %}">Comment</a>
                             </div>
                             <div class="bookmark">
                                 <span><i class="uil uil-bookmark"></i></span>
                             </div>
                         </div>
                         <!--FEED's liked by Section-->
-                        <div class="liked-by">
-                            <span><img src="{% static './images/member-1.png' %}" alt=""></span>
-                            <span><img src="{% static './images/member-3.png' %}" alt=""></span>
-                            <span><img src="{% static './images/member-4.png' %}" alt=""></span>
-                            <p>Liked by <b>Ernest Achiever</b> and <b>2,323 Others.</b></p>
+                        <div id="count">
+                            {% if post.likes.count >= 2 %}
+                                <p><b>{{post.likes.count}} likes</b></p>
+                            {% elif post.likes.count == 1 %}
+                                <p><b>{{post.likes.count}} like</b></p>
+                            {% else %}
+                                <p><b>No likes yet!</b></p>
+                            {% endif %}
                         </div>
                         <!--FEED's Caption-->
-                        <div class="caption">
-                            <p><b>Lana Rose</b> Lorem ipsum dolor, sit amet consectetur adipisicing elit. #lifestyle</p>
-                        </div>
+                        {% if post.description %}
+                            <div class="caption">
+                                <p><b>{{post.username}}</b> {{post.description}}</p>
+                            </div>
+                        {% endif %}
+                        <!-- tags -->
+                        {% if post.tags %}
+                            <p><b><i>{{post.tags}}</i></b></p>
+                        {% endif %}
                         <!--FEED's Comment Section-->
-                        <div class="comments text-muted">
-                            <p>view all 277 comments</p>
-                        </div>
+                        {% if post.details.count == 0 %}
+                            <p><b>No comments yet!</b></p>
+                        {% elif post.details.count <= 2 %}
+                            <hr>
+                            <h3>Comments</h3>
+                            {% for comments in post.details.all %}
+                                <div class="liked-by">
+                                    <span><img src="{{comments.username.profile.image.url}}" alt=""></span>
+                                    <h3>{{comments.username}}</h3>
+                                </div>
+                                <div class="comment">
+                                    <p>{{comments.comment_date}}</p>
+                                    <h3>{{comments.comment}}</h3>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                        {% endif %}
                     </div>
-
-                    <div class="feed">
-                        <!--FEED's HEAD SECTION-->
-                        <div class="head">
-                            <div class="user">
-                                <div class="profile-photo">
-                                    <img src="{% static './images/member-2.png' %}" alt="">
-                                </div>
-                                <div class="info">
-                                    <h3>John Doe</h3>
-                                    <small>Dubai, 15 MINUTES AGO</small>
-                                </div>
-                            </div>
-                            <span class="edit">
-                                <i class="uil uil-ellipsis-h"></i>
-                            </span>
-                        </div>
-                        <!--FEED's IMAGE SECTION-->
-                        <div class="photo">
-                            <img src="{% static './images/photo2.png' %}" alt="#">
-                        </div>
-                        <!--FEED's ACTION CENTER-->
-                        <div class="action-button">
-                            <div class="interaction-buttons">
-                                <span><i class="uil uil-heart"></i></span>
-                                <span><i class="uil uil-comment"></i></span>
-                                <span><i class="uil uil-share-alt"></i></span>
-                            </div>
-                            <div class="bookmark">
-                                <span><i class="uil uil-bookmark"></i></span>
-                            </div>
-                        </div>
-                        <!--FEED's liked by Section-->
-                        <div class="liked-by">
-                            <span><img src="{% static './images/member-1.png' %}" alt=""></span>
-                            <span><img src="{% static './images/member-3.png' %}" alt=""></span>
-                            <span><img src="{% static './images/member-4.png' %}" alt=""></span>
-                            <p>Liked by <b>Ernest Achiever</b> and <b>2,323 Others.</b></p>
-                        </div>
-                        <!--FEED's Caption-->
-                        <div class="caption">
-                            <p><b>Lana Rose</b> Lorem ipsum dolor, sit amet consectetur adipisicing elit. #lifestyle</p>
-                        </div>
-                        <!--FEED's Comment Section-->
-                        <div class="comments text-muted">
-                            <p>view all 277 comments</p>
-                        </div>
-                    </div>
-
-                    <div class="feed">
-                        <!--FEED's HEAD SECTION-->
-                        <div class="head">
-                            <div class="user">
-                                <div class="profile-photo">
-                                    <img src="{% static './images/member-3.png' %}" alt="">
-                                </div>
-                                <div class="info">
-                                    <h3>Lana Rose</h3>
-                                    <small>Dubai, 15 MINUTES AGO</small>
-                                </div>
-                            </div>
-                            <span class="edit">
-                                <i class="uil uil-ellipsis-h"></i>
-                            </span>
-                        </div>
-                        <!--FEED's IMAGE SECTION-->
-                        <div class="photo">
-                            <img src="{% static './images/photo5.png' %}" alt="#">
-                        </div>
-                        <!--FEED's ACTION CENTER-->
-                        <div class="action-button">
-                            <div class="interaction-buttons">
-                                <span><i class="uil uil-heart"></i></span>
-                                <span><i class="uil uil-comment"></i></span>
-                                <span><i class="uil uil-share-alt"></i></span>
-                            </div>
-                            <div class="bookmark">
-                                <span><i class="uil uil-bookmark"></i></span>
-                            </div>
-                        </div>
-                        <!--FEED's liked by Section-->
-                        <div class="liked-by">
-                            <span><img src="{% static './images/member-1.png' %}" alt=""></span>
-                            <span><img src="{% static './images/member-3.png' %}" alt=""></span>
-                            <span><img src="{% static './images/member-4.png' %}" alt=""></span>
-                            <p>Liked by <b>Ernest Achiever</b> and <b>2,323 Others.</b></p>
-                        </div>
-                        <!--FEED's Caption-->
-                        <div class="caption">
-                            <p><b>Lana Rose</b> Lorem ipsum dolor, sit amet consectetur adipisicing elit. #lifestyle</p>
-                        </div>
-                        <!--FEED's Comment Section-->
-                        <div class="comments text-muted">
-                            <p>view all 277 comments</p>
-                        </div>
-                    </div>
-
+                    {% endfor %}
                 </div>
             </div>
 
@@ -480,8 +358,30 @@
             </div>
         </div>
     </div>
+{% block jsfiles %}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script>
+	$(".like").click(function (e) {
+    var id = this.id;
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();
 
+    $.ajax({
+        url: href,
+        data: {
+          'likeId': id
+        },
+        success: function(response){
+            $("#body").load("#body");
+        }
+      })
+});
+</script>
 <!-- Javascript Link -->
 <script type="text/javascript" src="{% static 'index.js' %}"></script>
+{% endblock jsfiles %}
 </body>
 </html>
+
+{% endblock content%}

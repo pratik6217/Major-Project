@@ -1,6 +1,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block cssfiles %}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
 {% endblock cssfiles %}
 
 {% block content %}
@@ -8,13 +9,15 @@
 <div class="container">
     <div class="card-body">
         <h5 class="card-title text-center"><b>Post</b></h5>
-        <form class="form-signin" method = "POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <div class="form-group">
-                <button class="btn" type="submit">Post</button><br>
-            </div>
-        </form>
+        <div class="form">
+            <form class="form-signin" method = "POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="form-group">
+                    <button class="btn" type="submit">Post</button><br>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

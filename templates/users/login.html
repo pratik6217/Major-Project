@@ -14,6 +14,10 @@
         </div> 
         <div class="form">
             <form class="form-signin" method="POST" action="{% url 'login' %}">
+                <!-- <div class="alert alert-block alert-error"> 
+                    <p>Please enter a correct username and password. 
+                        Note that both fields may be case-sensitive.</p> 
+                </div> -->
                 {% csrf_token %} 
                 {{ form|crispy }}
                 <button class="btn login-btn" type="submit">
@@ -29,5 +33,6 @@
         </div>  
     </div>
 </div>
-
+<!-- Javascript Link -->
+<script type="text/javascript" src="{% static 'index.js' %}"></script>
 {% endblock content %}

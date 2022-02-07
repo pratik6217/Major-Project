@@ -13,19 +13,19 @@ from django.views.decorators.http import require_POST
 import json
 
 # Create your views here.
-
+# @login_required
 class PostListView(ListView):
-    model = Post
-    template_name = 'feed/home.html'
-    context_object_name = 'posts'
-    ordering = ['-date_posted']
-    paginate_by = 10
-    def get_context_data(self, **kwargs):
-        context = super(PostListView, self).get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
-            liked = [i for i in Post.objects.all() if Like.objects.filter(user = self.request.user, post=i)]
-            context['liked_post'] = liked
-        return context
+	model = Post
+	template_name = 'feed/home.html'
+	context_object_name = 'posts'
+	ordering = ['-date_posted']
+	paginate_by = 10
+	def get_context_data(self, **kwargs):
+		context = super(PostListView, self).get_context_data(**kwargs)
+		if self.request.user.is_authenticated:
+			liked = [i for i in Post.objects.all() if Like.objects.filter(user = self.request.user, post=i)]
+			context['liked_post'] = liked
+		return context
 
 class UserPostListView(LoginRequiredMixin, ListView):
 	model = Post
@@ -71,7 +71,7 @@ def create_post(request):
 			data.username = user
 			data.save()
 			messages.success(request, f'Posted Successfully')
-			return redirect('homepage')
+			return redirect('home')
 	else:
 		form = NewPostForm()
 	return render(request, 'feed/create_post.html', {'form':form})
@@ -87,14 +87,14 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 	def test_func(self):
 		post = self.get_object()
-		if self.request.user == post.user_name:
+		if self.request.user == post.username:
 			return True
 		return False
 
 @login_required
 def post_delete(request, pk):
 	post = Post.objects.get(pk=pk)
-	if request.user== post.user_name:
+	if request.user== post.username:
 		Post.objects.get(pk=pk).delete()
 	return redirect('home')
 
@@ -123,7 +123,7 @@ def like(request):
 		liked = True
 		Like.objects.create(user=user, post=post)
 	resp = {
-        'liked':liked
+        'liked': liked
     }
 	response = json.dumps(resp)
 	return HttpResponse(response, content_type = "application/json")

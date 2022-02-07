@@ -18,10 +18,18 @@ body{
     height: 100vh;
 }
 
-ul{
+/* ul{
     display: none;
+} */
+
+.alert ul li {
+    display: list-item;
+    text-align: --webkit-match-parent;
 }
 
+.alert ul {
+    list-style-type: circle;
+}
 
 .card-body{
     display: flex;

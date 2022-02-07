@@ -11,13 +11,14 @@ from django.http import HttpResponse
 from .models import Profile, FriendRequest
 from .forms import UserCreationForm, UserRegisterForm, ProfileUpdateForm, UserUpdateForm
 from django.contrib.auth.models import User
+import feed.views as feed_views
 import random
 
 # Create your views here.
 
-@login_required
-def home(request):
-    return render(request, "./home.html")
+# @login_required
+# def home(request):
+#     return render(request, "./home.html")
 
 User = get_user_model()
 
@@ -137,13 +138,47 @@ def profile_view(request, slug):
 
     context = {
         'u': u,
+        'p': p,
         'button_status': button_status,
         'friends_list': friends,
         'sent_friend_requests': sent_friend_requests,
         'rec_friend_requests': rec_friend_requests,
-        'post_count': user_posts.count
+        'post_count': user_posts.count,
+        'user_posts': user_posts,
     }
     return render(request, 'users/profile.html', context)
+
+@login_required
+def notifications(request):
+    p = request.user.profile
+    u = p.user
+    sent_friend_requests = FriendRequest.objects.filter(from_user= u)
+    rec_friend_requests = FriendRequest.objects.filter(to_user= u)
+    friends = p.friends.all()
+    user_post = Post.objects.filter(username= u)
+
+    button_status = 'none'
+    # if this user is our friend
+    if(p.user not in request.user.profile.friends.all()):
+        button_status = 'not_friend'
+
+        #  if we have sent a friend request
+        if len(FriendRequest.objects.filter(from_user= request.user).filter(to_user= u)) == 1:
+            button_status = 'friend_request_sent'
+        
+        # if received a friend request from them
+        if len(FriendRequest.objects.filter(from_user= p.user).filter(to_user= request.user)) == 1:
+            button_status = 'friend_request_received'
+
+    context = {
+        'u': u,
+        'button_status': button_status,
+        'friends_list': friends,
+        'sent_friend_requests': sent_friend_requests,
+        'rec_friend_requests': rec_friend_requests,
+        'post_count': user_post.count
+    }
+    return render(request, f'users/notifications.html', context)
 
 def register(request):
     if request.method == 'POST':
@@ -182,32 +217,33 @@ def edit_profile(request):
 # @login_required
 def my_profile(request):
     p = request.user.profile
-    you = p.user
-    sent_friend_requests = FriendRequest.objects.filter(from_user= you)
-    rec_friend_requests = FriendRequest.objects.filter(to_user= you)
-    friends = p.friends.all()
-    user_post = Post.objects.filter(username= you)
+    u = p.user
+    model = Post
+    template_name = 'users/profile.html'
+    paginate_by = 10
+    user_post = Post.objects.filter(username = u)
 
-    button_status = 'none'
-    # if this user is our friend
-    if(p.user not in request.user.profile.friends.all()):
-        button_status = 'not_friend'
+    # button_status = 'none'
+    # # if this user is our friend
+    # if(p.user not in request.user.profile.friends.all()):
+    #     button_status = 'not_friend'
 
-        #  if we have sent a friend request
-        if len(FriendRequest.objects.filter(from_user= request.user).filter(to_user= you)) == 1:
-            button_status = 'friend_request_sent'
+    #     #  if we have sent a friend request
+    #     if len(FriendRequest.objects.filter(from_user= request.user).filter(to_user= u)) == 1:
+    #         button_status = 'friend_request_sent'
         
-        # if received a friend request from them
-        if len(FriendRequest.objects.filter(from_user= p.user).filter(to_user= request.user)) == 1:
-            button_status = 'friend_request_received'
+    #     # if received a friend request from them
+    #     if len(FriendRequest.objects.filter(from_user= p.user).filter(to_user= request.user)) == 1:
+    #         button_status = 'friend_request_received'
 
     context = {
-        'u': you,
-        'button_status': button_status,
-        'friends_list': friends,
-        'sent_friend_requests': sent_friend_requests,
-        'rec_friend_requests': rec_friend_requests,
-        'post_count': user_post.count
+        'u': u,
+        # 'button_status': button_status,
+        # 'friends_list': friends,
+        # 'sent_friend_requests': sent_friend_requests,
+        # 'rec_friend_requests': rec_friend_requests,
+        'post_count': user_post.count,
+        "posts": user_post
     }
     return render(request, f'users/profile.html', context)
 

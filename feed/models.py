@@ -20,7 +20,7 @@ class Comments(models.Model):
     post = models.ForeignKey(Post, related_name = 'details', on_delete = models.CASCADE)
     username = models.ForeignKey(User, related_name = 'details', on_delete = models.CASCADE)
     comment = models.CharField(max_length = 255)
-    comment_date = models.DateTimeField(timezone.now)
+    comment_date = models.DateTimeField(default = timezone.now)
 
 class Like(models.Model):
     post = models.ForeignKey(Post, related_name = 'likes', on_delete = models.CASCADE)
